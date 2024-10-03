@@ -71,7 +71,7 @@ def main():
     args = parser.parse_args()
 
     sys.path.append(args.rvad_home)
-    import speechproc
+    from legacy_files import speechproc
 
     stride = 160
     lines = sys.stdin.readlines()

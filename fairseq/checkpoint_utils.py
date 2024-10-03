@@ -337,7 +337,7 @@ def load_checkpoint_to_cpu(path, arg_overrides=None, load_on_all_ranks=False):
         local_path = PathManager.get_local_path(path)
 
     with open(local_path, "rb") as f:
-        state = torch.load(f, map_location=torch.device("cpu"))
+        state = torch.load(f, map_location=torch.device("cpu"), weights_only=False)
 
     if "args" in state and state["args"] is not None and arg_overrides is not None:
         args = state["args"]
@@ -450,6 +450,7 @@ def load_model_ensemble_and_task(
                 state = load_checkpoint_to_cpu(filename, arg_overrides)
             if "args" in state and state["args"] is not None:
                 cfg = convert_namespace_to_omegaconf(state["args"])
+                cfg.task["data"] = "/home/marten/MA/data/models/"
             elif "cfg" in state and state["cfg"] is not None:
                 cfg = state["cfg"]
             else:
