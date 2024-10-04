@@ -60,10 +60,11 @@ optimizer:
       lr_float: null
       optimizer:
         _name: adam
+        lr: [0.00005]
         adam_betas: [0.5,0.98]
         adam_eps: 1e-06
         weight_decay: 0
-        amsgrad: false
+        # amsgrad: false
       lr_scheduler:
         _name: fixed
         warmup_updates: 0
@@ -72,10 +73,11 @@ optimizer:
       lr_float: null
       optimizer:
         _name: adam
+        lr: [ 0.0003 ]
         adam_betas: [0.5,0.98]
         adam_eps: 1e-06
         weight_decay: 0.0001
-        amsgrad: false
+        # amsgrad: false
       lr_scheduler:
         _name: fixed
         warmup_updates: 0
@@ -137,18 +139,18 @@ hydra:
           - task.labels
           - task.force_model_seed
   sweep:
-    dir: /checkpoint/${env:USER}/${env:PREFIX}/${hydra.job.config_name}/${hydra.job.override_dirname}
+    dir: /home/marten/MA/checkpoint/${env:USER}/${env:PREFIX}/${hydra.job.config_name}/${hydra.job.override_dirname}
     subdir: ${hydra.job.num}
-  launcher:
-    submitit_folder: ${hydra.sweep.dir}
-    timeout_min: 3000
-    cpus_per_task: 10
-    gpus_per_node: 1
-    tasks_per_node: 1
-    mem_gb: 120
-    nodes: 1
-    name: ${env:PREFIX}_${hydra.job.config_name}
-    partition: devlab,learnlab,learnfair,scavenge
-    comment: intern_endding_soon
-    constraint: volta32gb
-    max_num_timeout: 30
+  # launcher:
+  #   submitit_folder: ${hydra.sweep.dir}
+  #   timeout_min: 3000
+  #   cpus_per_task: 10
+  #   gpus_per_node: 1
+  #   tasks_per_node: 1
+  #   mem_gb: 120
+  #   nodes: 1
+  #   name: ${env:PREFIX}_${hydra.job.config_name}
+  #   partition: devlab,learnlab,learnfair,scavenge
+  #   comment: intern_endding_soon
+  #   constraint: volta32gb
+  #   max_num_timeout: 30
