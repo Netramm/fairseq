@@ -35,8 +35,17 @@ def get_parser():
 
 class Wav2VecFeatureReader(object):
     def __init__(self, cp_file, layer):
+        # overrides to make code working
+        path, checkpoint = os.path.split(cp_file)
+        overrides = {
+            "task": "audio_finetuning",
+            "w2v_path": path
+        }
+        
         model, cfg, task = fairseq.checkpoint_utils.load_model_ensemble_and_task(
-            [cp_file]
+            fairseq.utils.split_paths(cp_file, separator="\\"),
+            arg_overrides=overrides,
+            strict=True
         )
         model = model[0]
         model.eval()
@@ -62,8 +71,8 @@ class Wav2VecFeatureReader(object):
                     source = F.layer_norm(source, source.shape)
             source = source.view(1, -1)
 
-            m_res = self.model(source=source, mask=False, features_only=True, layer=self.layer)
-            return m_res["x"].squeeze(0).cpu()
+            m_res = self.model(source=source, mask=False, features_only=True, layer=self.layer, padding_mask=None)
+            return m_res["encoder_out"].squeeze(0).cpu()
 
 
 def get_iterator(args):
