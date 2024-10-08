@@ -425,7 +425,6 @@ def load_model_ensemble_and_task(
                 state = load_checkpoint_to_cpu(filename, arg_overrides)
             if "args" in state and state["args"] is not None:
                 cfg = convert_namespace_to_omegaconf(state["args"])
-                cfg.task["data"] = "/home/marten/MA/data/models/"
             elif "cfg" in state and state["cfg"] is not None:
                 cfg = state["cfg"]
             else:

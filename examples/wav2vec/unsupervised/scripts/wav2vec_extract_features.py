@@ -5,6 +5,7 @@
 # LICENSE file in the root directory of this source tree.
 
 import argparse
+import math
 import os
 import os.path as osp
 import tqdm
@@ -41,13 +42,18 @@ class Wav2VecFeatureReader(object):
             "task": "audio_finetuning",
             "w2v_path": path
         }
-        
-        model, cfg, task = fairseq.checkpoint_utils.load_model_ensemble_and_task(
-            fairseq.utils.split_paths(cp_file, separator="\\"),
-            arg_overrides=overrides,
-            strict=True
-        )
-        model = model[0]
+        state = fairseq.checkpoint_utils.load_checkpoint_to_cpu(cp_file, arg_overrides=overrides)
+
+        if "cfg" in state:
+            w2v_args = state["cfg"]
+            w2v_args["task"]["data"] = "/home/marten/MA/data/models/"
+            task = fairseq.tasks.setup_task(w2v_args.task)
+            model = task.build_model(w2v_args.model)
+        else:
+            w2v_args = state["args"]
+            task = fairseq.tasks.setup_task(w2v_args)
+            model = task.build_model(w2v_args)
+        model.load_state_dict(state["model"], strict=True)
         model.eval()
         model.cuda()
         self.model = model
@@ -71,8 +77,8 @@ class Wav2VecFeatureReader(object):
                     source = F.layer_norm(source, source.shape)
             source = source.view(1, -1)
 
-            m_res = self.model(source=source, mask=False, features_only=True, layer=self.layer, padding_mask=None)
-            return m_res["encoder_out"].squeeze(0).cpu()
+            m_res = self.model(source=source, padding_mask=None)
+            return m_res["layer_results"][math.floor(self.layer / 2)][(self.layer % 2) * 2].squeeze(1).cpu()
 
 
 def get_iterator(args):

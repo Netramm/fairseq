@@ -120,7 +120,7 @@ class ExtractedFeaturesDataset(FairseqDataset):
         )
         padding_mask = torch.BoolTensor(collated_features.shape[:-1]).fill_(False)
         for i, (f, size) in enumerate(zip(features, sizes)):
-            collated_features[i, :size] = torch.squeeze(f, dim=1)
+            collated_features[i, :size] = f
             padding_mask[i, size:] = True
 
         res = {

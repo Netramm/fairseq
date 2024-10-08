@@ -33,7 +33,7 @@ task:
 
 dataset:
   num_workers: 6
-  batch_size: 160
+  batch_size: 32
   skip_invalid_size_inputs_valid_test: true
   valid_subset: valid
   validate_interval: 1000
@@ -110,7 +110,7 @@ model:
   gradient_penalty: 1.0
   code_penalty: 3.0
   temp: [ 2,0.1,0.99995 ]
-  input_dim: 32
+  input_dim: 768
   mmi_weight: 0.5
   target_dim: 64
 
